@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--
+  study - landing page (self-contained, no build step).
+  Deploy: GitHub Pages (main / root) or Vercel (root). All links are relative.
+  One thing to set: replace the GitHub handle "flownrt" below if the repo lives elsewhere.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>study - a tutor that remembers</title>
+<meta name="description" content="An Agent Skill that turns Claude into a personal tutor: a persistent, source-grounded learning workspace with interactive lessons and an evidence-based progress map.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f5f2ec; --card:#fffdf8; --ink:#1c2224; --muted:#586063; --border:#e5e0d6;
+    --accent:#4a3fd0; --accent-soft:#e7e5f8; --good:#1a7f4b; --good-soft:#e7f5ec;
+    --serif:"Fraunces",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --mono:"SF Mono",ui-monospace,monospace;
+    --wrap:960px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 1.4rem}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* hero */
+  header{padding:4.5rem 0 2.5rem;text-align:center;background:
+     radial-gradient(60% 90% at 50% -10%, var(--accent-soft), transparent 70%);}
+  .eyebrow{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1.name{font-family:var(--serif);font-weight:600;font-size:4.2rem;line-height:1;letter-spacing:-.03em;margin:.5rem 0 .2rem}
+  .tagline{font-family:var(--serif);font-size:1.7rem;line-height:1.2;font-weight:400;letter-spacing:-.01em;margin:.4rem auto .2rem;max-width:22ch}
+  .pitch{font-size:1.05rem;color:var(--muted);max-width:56ch;margin:1rem auto 1.8rem}
+
+  /* install command */
+  .cmd{display:flex;align-items:stretch;gap:0;max-width:520px;margin:0 auto;background:var(--ink);border-radius:12px;overflow:hidden;box-shadow:0 12px 30px -12px rgba(28,34,36,.4);text-align:left}
+  .cmd pre{margin:0;padding:.95rem 1.1rem;font-family:var(--mono);font-size:.82rem;color:#f5f2ec;overflow-x:auto;flex:1;line-height:1.7}
+  .cmd .tok-c{color:#b9b2ff}
+  .copy{border:none;background:var(--accent);color:#fff;font-family:var(--sans);font-weight:600;font-size:.82rem;padding:0 1.1rem;cursor:pointer;white-space:nowrap}
+  .copy:hover{filter:brightness(1.08)}
+  .copy.done{background:var(--good)}
+  .ctas{margin-top:1rem;display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;align-items:center}
+  .btn{font-family:var(--sans);font-weight:600;font-size:.9rem;border-radius:10px;padding:.6rem 1.1rem;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink);display:inline-block}
+  .btn:hover{border-color:var(--accent);text-decoration:none}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.gh-btn{display:inline-flex;align-items:center;gap:.45rem}
+  .btn.gh-btn svg{flex:0 0 auto}
+  .muted-link{font-size:.85rem;color:var(--muted)}
+
+  /* sections */
+  section{padding:3.2rem 0}
+  .sec-head{text-align:center;max-width:60ch;margin:0 auto 1.6rem}
+  h2.sec{font-family:var(--serif);font-weight:600;font-size:2rem;letter-spacing:-.02em;margin:0 0 .4rem}
+  .sec-head p{color:var(--muted);margin:.2rem 0 0}
+  .kick{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+
+  /* demo */
+  .tabs{display:flex;gap:.5rem;justify-content:center;margin:0 0 1rem}
+  .tab{font-family:var(--sans);font-weight:600;font-size:.9rem;border:1.5px solid var(--border);background:var(--card);color:var(--muted);border-radius:99px;padding:.45rem 1.1rem;cursor:pointer}
+  .tab[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .frame{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 50px -24px rgba(28,34,36,.45)}
+  .frame .bar{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--ink) 3%,var(--card))}
+  .dot{width:10px;height:10px;border-radius:99px;background:var(--border)}
+  .frame .file{font-family:var(--mono);font-size:.74rem;color:var(--muted);margin-left:.3rem}
+  .frame .open{margin-left:auto;font-size:.78rem;font-weight:600}
+  .frame iframe{width:100%;height:660px;border:0;display:block;background:var(--paper)}
+  .cap{text-align:center;color:var(--muted);font-size:.9rem;margin:.9rem auto 0;max-width:60ch}
+  .cap b{color:var(--ink)}
+
+  /* features */
+  .alt{background:color-mix(in srgb,var(--accent) 5%,var(--paper))}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .feat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem}
+  .feat h3{font-family:var(--sans);font-size:1rem;margin:.2rem 0 .35rem}
+  .feat .ic{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:1.1rem;background:var(--accent-soft);width:2rem;height:2rem;border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .feat p{font-size:.9rem;color:var(--muted);margin:.5rem 0 0}
+
+  /* install detail */
+  .steps{max-width:640px;margin:0 auto;display:grid;gap:.8rem}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem}
+  .step h4{margin:0 0 .35rem;font-size:.95rem}
+  .step pre{margin:.4rem 0 0;background:var(--ink);color:#f5f2ec;border-radius:8px;padding:.7rem .9rem;font-family:var(--mono);font-size:.78rem;overflow-x:auto;line-height:1.6}
+  .step .tok-c{color:#b9b2ff}
+  .step p{margin:.3rem 0 0;font-size:.88rem;color:var(--muted)}
+
+  footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;color:var(--muted);font-size:.85rem}
+  footer p{margin:.3rem 0}
+  footer a{font-weight:600}
+  .foot-links{font-size:.82rem}
+  .foot-links .sep{color:var(--border);margin:0 .3rem}
+
+  @media(max-width:760px){
+    h1.name{font-size:3rem}.tagline{font-size:1.35rem}
+    .grid{grid-template-columns:1fr}
+    .frame iframe{height:560px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Agent Skill · for Claude Code &amp; Cowork</p>
+    <h1 class="name">study</h1>
+    <p class="tagline">A personal tutor that actually remembers.</p>
+    <p class="pitch">Most AI help evaporates when you close the tab. <b>study</b> builds a real learning workspace on your machine - a goal, trusted sources, hand-built interactive lessons, and an evidence-based progress map - so every session picks up where the last left off instead of starting from zero.</p>
+
+    <div class="cmd">
+      <pre id="cmd"><span class="tok-c">/plugin</span> marketplace add flownrt/skills
+<span class="tok-c">/plugin</span> install study@skills</pre>
+      <button class="copy" id="copyBtn" aria-label="Copy install command">Copy</button>
+    </div>
+    <div class="ctas">
+      <a class="btn primary" href="study.skill" download>Download study.skill</a>
+      <a class="btn gh-btn" href="https://github.com/flownrt/skills" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>More skills</a>
+    </div>
+  </div>
+</header>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kick">Live demo · subject: LLM architecture</p>
+      <h2 class="sec">See a real lesson - and the map it feeds</h2>
+      <p><b>A peek at study teaching LLM architecture</b> – how large language models actually work. The two lessons here are just a sample from a much larger curriculum; the dashboard shows the full map (36 concepts) and how far one learner has come. All of it is produced by the skill – lessons fully interactive, dashboard generated from proven progress.</p>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-view="context">Lesson · Context &amp; KV cache</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="bandwidth">Lesson · Memory bandwidth</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="dash">Dashboard</button>
+    </div>
+
+    <div class="frame">
+      <div class="bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="file" id="fileName">01-lessons/0004-context-and-kv-cache.html</span>
+        <a class="open" id="openBtn" href="demo/0004-context-and-kv-cache.html" target="_blank" rel="noopener">Open full screen &nearr;</a>
+      </div>
+      <iframe id="demoFrame" src="demo/0004-context-and-kv-cache.html" title="study demo" loading="lazy"></iframe>
+    </div>
+    <p class="cap" id="cap"><b>A lesson on context &amp; the KV cache.</b> Drag the conversation longer and watch the work to generate a reply explode from linear to quadratic the moment the KV cache is switched off. Every lesson ends by sending you back to chat to prove it.</p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kick">How it works</p>
+      <h2 class="sec">Learning that compounds</h2>
+      <p>Six ideas separate a tutor from a chatbot that happens to know things.</p>
+    </div>
+    <div class="grid">
+      <div class="feat"><div class="ic">1</div><h3>Lives on disk, not in a chat</h3><p>Each subject gets a folder: goal, sources, lessons, progress, cheat sheets. Close the tab and nothing is lost - the next session reads it back and recognizes you.</p></div>
+      <div class="feat"><div class="ic">2</div><h3>Grounded, not guessed</h3><p>Lessons are built from trusted sources and carry citations, instead of leaning on the model's hazy memory. What you learn is anchored to something real.</p></div>
+      <div class="feat"><div class="ic">3</div><h3>Prove it, then progress</h3><p>A lesson is not "done" when you read it. You demonstrate the skill back in chat; only real evidence turns a concept green on your map.</p></div>
+      <div class="feat"><div class="ic">4</div><h3>Interactive by default</h3><p>Every lesson is a hand-built page with a mechanic to work through - like the KV-cache chart above - never a wall of passive text.</p></div>
+      <div class="feat"><div class="ic">5</div><h3>Teaches at your edge</h3><p>It reads what you have already proven and teaches the next thing just past it, with spaced review so hard-won knowledge does not quietly fade.</p></div>
+      <div class="feat"><div class="ic">6</div><h3>Bring your own curriculum</h3><p>Ships with starter maps for LLM architecture, chess and practical AI - and any syllabus or book you supply always takes priority.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kick">Install</p>
+      <h2 class="sec">Three ways in</h2>
+      <p>study works with any agent that supports Agent Skills. It works best where Claude has folder access and can persist files between sessions - Claude Code or Cowork.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h4>1 &middot; From the marketplace <span style="color:var(--accent)">(recommended)</span></h4>
+        <pre><span class="tok-c">/plugin</span> marketplace add flownrt/skills
+<span class="tok-c">/plugin</span> install study@skills</pre>
+        <p>One managed install that stays updated. In Cowork, add it from Customize &rarr; Personal plugins &rarr; + &rarr; Add marketplace, then enter the repo.</p>
+      </div>
+      <div class="step">
+        <h4>2 &middot; Download the bundle</h4>
+        <p><a href="study.skill" download>Download study.skill</a> and install it through the Claude app's skill installer. No marketplace needed.</p>
+      </div>
+      <div class="step">
+        <h4>3 &middot; As a folder</h4>
+        <p>Copy the <code>skill/</code> directory from the repo into your Claude skills directory (rename it to <code>study</code>). Picked up the same session, no restart.</p>
+      </div>
+    </div>
+    <p class="cap" style="margin-top:1.4rem">Recommended model: Opus with extended reasoning - the curriculum reasoning and hand-built lessons reward it.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><b>study</b> is part of <a href="https://github.com/flownrt/skills" target="_blank" rel="noopener">skills</a>, a curated collection of general-purpose Agent Skills.</p>
+    <p class="foot-links"><a href="https://github.com/flownrt/study-skill" target="_blank" rel="noopener">Browse the source</a><span class="sep">·</span>Licensed under Apache-2.0</p>
+  </div>
+</footer>
+
+<script>
+  // copy install command
+  var btn=document.getElementById("copyBtn");
+  btn.addEventListener("click",function(){
+    var text="/plugin marketplace add flownrt/skills\n/plugin install study@skills";
+    navigator.clipboard.writeText(text).then(function(){
+      btn.textContent="Copied";btn.classList.add("done");
+      setTimeout(function(){btn.textContent="Copy";btn.classList.remove("done");},1800);
+    });
+  });
+
+  // demo tab switch
+  var frame=document.getElementById("demoFrame"),
+      openBtn=document.getElementById("openBtn"),
+      fileName=document.getElementById("fileName"),
+      cap=document.getElementById("cap");
+  var views={
+    context:{src:"demo/0004-context-and-kv-cache.html",file:"01-lessons/0004-context-and-kv-cache.html",
+      cap:"<b>Sample lesson: context &amp; the KV cache.</b> One lesson out of a full curriculum. Drag the conversation longer and watch the work to generate a reply explode from linear to quadratic once the KV cache is off &ndash; the reason a model&rsquo;s working memory is affordable at all. Every lesson ends by sending you back to chat to prove it."},
+    bandwidth:{src:"demo/0006-memory-bandwidth.html",file:"01-lessons/0006-memory-bandwidth.html",
+      cap:"<b>Sample lesson: memory bandwidth.</b> Another lesson from the same curriculum. Drag the batch size across a live roofline chart to watch the bottleneck flip from memory-bound to compute-bound &ndash; the one idea behind why output tokens cost more and why context lengths stalled."},
+    dash:{src:"demo/00-DASHBOARD.html",file:"00-DASHBOARD.html",
+      cap:"<b>The progress dashboard.</b> The full curriculum map – every concept as solid, developing, shaky or not started – so \"where am I?\" is answered at a glance. Only real evidence turns a concept green, never a lesson you merely read."}
+  };
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(t){
+    t.addEventListener("click",function(){
+      Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(x){x.setAttribute("aria-selected","false");});
+      t.setAttribute("aria-selected","true");
+      var v=views[t.getAttribute("data-view")];
+      frame.src=v.src; openBtn.href=v.src; fileName.textContent=v.file; cap.innerHTML=v.cap;
+    });
+  });
+</script>
+</body>
+</html>

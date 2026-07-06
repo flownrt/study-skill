@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study style guide — Editorial Refined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{font-size:16px;--paper:#f5f2ec;--card:#fffdf8;--ink:#1c2224;--muted:#586063;--border:#e5e0d6;--serif:"Fraunces",Georgia,serif;--sans:"Inter",system-ui,sans-serif;--mono:"SF Mono",ui-monospace,monospace}
+
+:root{
+  --good:#1a7f4b; --good-soft:#e7f5ec; --bad:#c0392b; --bad-soft:#fbeae8; --warn:#b26a00; --warn-soft:#fdf3e3;
+  --accent:#2a4fcf; --accent-soft:#e9ecf7; --accent-mid:#8a97e0;
+}
+[data-accent="cobalt"]{--accent:#2a4fcf}[data-accent="teal"]{--accent:#0c6e77}[data-accent="cyan"]{--accent:#0e7490}[data-accent="indigo"]{--accent:#4a3fd0}[data-accent="violet"]{--accent:#6a3dd6}[data-accent="slate"]{--accent:#3f5063}
+[data-accent]{--accent-soft:color-mix(in srgb,var(--accent) 14%,var(--paper));--accent-mid:color-mix(in srgb,var(--accent) 55%,#fff)}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);margin:0;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* base reading wrapper: rem-anchored headings stay put, running text is smaller */
+.ws{font-size:.9375rem}
+
+/* type */
+.ws h1{font-family:var(--serif);font-weight:600;font-size:2.15rem;line-height:1.12;letter-spacing:-.015em;margin:.3rem 0 .2rem;color:var(--ink)}
+.ws h2{font-family:var(--sans);font-weight:700;font-size:1.2rem;margin:1.6rem 0 .55rem;padding-bottom:.3rem;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:.5rem;letter-spacing:-.01em}
+.ws h3{font-family:var(--sans);font-weight:700;font-size:1.04rem;margin:1rem 0 .35rem}
+.kicker{font-family:var(--sans);font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.kicker .accent{color:var(--accent)}
+.sub{font-family:var(--sans);color:var(--muted);font-style:italic;font-size:1rem;margin:0 0 .2rem}
+.lead{font-size:.98rem}
+.ws p{margin:.6rem 0}
+em.term{font-style:normal;font-weight:600;color:var(--accent)}
+.small{font-size:.82rem;color:var(--muted)}
+code{font-family:var(--mono);font-size:.84em;background:color-mix(in srgb,var(--ink) 8%,var(--paper));padding:.08rem .35rem;border-radius:4px}
+
+/* badges + tags */
+.badge{font-family:var(--sans);font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--accent);border-radius:99px;padding:.18rem .6rem;white-space:nowrap}
+.tag{font-family:var(--sans);font-size:.68rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:.12rem .5rem;white-space:nowrap}
+
+/* boxes */
+.goal{font-family:var(--sans);font-size:.86rem;line-height:1.55;color:var(--muted);background:var(--accent-soft);border-radius:10px;padding:.85rem 1.05rem}
+.goal b{color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;margin:.8rem 0}
+.card .hd{font-family:var(--sans);font-weight:700;font-size:.9rem;margin-bottom:.3rem}
+.callout{font-family:var(--sans);font-size:.92rem;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;padding:.75rem .95rem;margin:.8rem 0}
+.callout.key{border-color:var(--good);background:var(--good-soft)}
+.callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+.callout .lbl{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:.2rem;color:var(--muted)}
+.note{font-family:var(--sans);font-size:.83rem;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.6rem .85rem;margin:.8rem 0}
+blockquote.quote{font-family:var(--serif);font-style:italic;font-size:1.02rem;color:var(--ink);border-left:3px solid var(--accent-mid);margin:.8rem 0;padding:.2rem 0 .2rem 1rem}
+blockquote.quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:.78rem;color:var(--muted);margin-top:.35rem}
+
+/* key-value + lists */
+dl.kv{font-family:var(--sans);font-size:.88rem;margin:.6rem 0;display:grid;grid-template-columns:auto 1fr;gap:.3rem .8rem}
+dl.kv dt{font-weight:700;color:var(--accent);white-space:nowrap}
+dl.kv dd{margin:0}
+ol.steps{list-style:none;counter-reset:s;font-family:var(--sans);font-size:.9rem;padding:0;margin:.6rem 0}
+ol.steps li{counter-increment:s;position:relative;padding-left:2rem;margin:.5rem 0}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:-.1rem;width:1.4rem;height:1.4rem;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center}
+ul.ticks{list-style:none;font-family:var(--sans);font-size:.9rem;padding:0;margin:.6rem 0}
+ul.ticks li{position:relative;padding-left:1.5rem;margin:.4rem 0}
+ul.ticks li::before{content:"\2713";position:absolute;left:0;color:var(--good);font-weight:700}
+
+/* table */
+table.kit{width:100%;border-collapse:collapse;margin:.6rem 0;font-family:var(--sans);font-size:.86rem}
+table.kit th,table.kit td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--border);vertical-align:top}
+table.kit th{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+table.kit td:first-child{font-weight:700;white-space:nowrap;color:var(--accent)}
+
+/* glossary */
+dl.gloss{margin:.4rem 0}
+dl.gloss dt{font-family:var(--sans);font-weight:700;margin-top:.8rem;font-size:.94rem;color:var(--ink)}
+dl.gloss dd{margin:.2rem 0 0;font-size:.88rem;color:var(--ink)}
+.cid{font-family:var(--mono);font-size:.68rem;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:.08rem .4rem;border-radius:99px;margin-left:.4rem;white-space:nowrap}
+.st{font-family:var(--sans);font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:.08rem .4rem;border-radius:99px;margin-left:.35rem;background:var(--good-soft);color:var(--good)}
+
+/* reference card: equation, litmus, durable/brittle columns */
+.eq{font-family:var(--sans);font-weight:700;text-align:center;font-size:1.05rem;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.8rem;margin:.4rem 0 .3rem;letter-spacing:-.01em}
+.eq .m{color:var(--muted)} .eq .h{color:var(--accent)}
+.litmus{font-family:var(--sans);background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:.7rem .9rem;margin:.5rem 0;font-size:.89rem}
+.litmus b{color:var(--accent)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.6rem 0}
+.box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.8rem .95rem;font-family:var(--sans)}
+.box.dur{border-top:3px solid var(--good)} .box.bri{border-top:3px solid var(--bad)}
+.box h3{margin:.1rem 0 .4rem;font-size:.9rem} .box.dur h3{color:var(--good)} .box.bri h3{color:var(--bad)}
+.box ul{margin:.2rem 0 0;padding-left:1.1rem;font-size:.82rem} .box li{margin:.22rem 0}
+
+/* progress dashboard */
+.dash{font-family:var(--sans);margin:.5rem 0}
+.dash .row{display:grid;grid-template-columns:15rem 1fr 6.4rem;align-items:center;gap:.7rem;margin:.5rem 0}
+.dash .t{font-size:.85rem;font-weight:600}
+.meter{height:8px;background:color-mix(in srgb,var(--ink) 9%,var(--paper));border-radius:99px;overflow:hidden}
+.meter>i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.fill-good{background:var(--good)!important} .fill-acc{background:var(--accent)!important}
+.fill-warn{background:var(--warn)!important} .fill-none{background:transparent!important}
+.pill{font-family:var(--sans);font-size:.62rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;text-align:center;padding:.2rem .15rem;border-radius:99px;border:1px solid transparent}
+.p-solid{background:var(--good-soft);color:var(--good)}
+.p-dev{background:var(--accent-soft);color:var(--accent)}
+.p-shaky{background:var(--warn-soft);color:var(--warn)}
+.p-none{background:transparent;color:var(--muted);border-color:var(--border)}
+
+/* reveal-to-learn */
+.reveal{font-family:var(--sans);font-size:.84rem;font-weight:600;color:var(--accent);background:var(--accent-soft);border:none;border-radius:8px;padding:.45rem .8rem;cursor:pointer;margin-top:.5rem}
+.reveal:hover{filter:brightness(.97)}
+.answer{display:none;margin-top:.6rem;padding:.7rem .9rem;background:var(--card);border:1px dashed var(--accent);border-radius:8px;font-size:.92rem}
+.answer.show{display:block}
+
+/* quiz (one example mechanic — not a default) */
+.quiz{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin:.6rem 0}
+.quiz .q{font-family:var(--sans);font-weight:700;font-size:.95rem;margin:0 0 .6rem}
+.opt{font-family:var(--sans);font-size:.9rem;display:block;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:9px;padding:.55rem .8rem;margin:.4rem 0;cursor:pointer;transition:.13s;color:var(--ink)}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:700}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.fb{font-family:var(--sans);font-size:.86rem;margin-top:.6rem;padding:.55rem .8rem;border-radius:8px;display:none}
+.fb.show{display:block}.fb.ok{background:var(--good-soft);color:var(--good)}.fb.no{background:var(--bad-soft);color:var(--bad)}
+
+/* accent controls for custom interactions */
+.btn{font-family:var(--sans);font-weight:600;font-size:.88rem;border:none;border-radius:9px;padding:.5rem 1rem;cursor:pointer;background:var(--accent);color:#fff}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+input[type=range]{accent-color:var(--accent);width:100%}
+
+/* closing self-check */
+.selfcheck{background:var(--card);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:12px;padding:1.2rem;margin:.6rem 0}
+.selfcheck h2{margin-top:0;border:none;padding:0}
+.selfcheck ol{font-family:var(--sans);font-size:.93rem;margin:.3rem 0 1rem;padding-left:1.2rem}
+.selfcheck li{margin:.5rem 0}
+.handoff{font-family:var(--sans);font-size:.88rem;color:var(--muted);border-top:1px dashed var(--border);padding-top:.85rem;margin:0}
+.handoff b{color:var(--ink)}
+.src{font-family:var(--sans);font-size:.72rem;color:var(--muted);margin-top:1.4rem;border-top:1px solid var(--border);padding-top:.7rem}
+
+@media(max-width:560px){.cols{grid-template-columns:1fr}.dash .row{grid-template-columns:10rem 1fr 5.4rem}}
+@media print{body{background:#fff}.reveal{display:none}.answer{display:block}.card,.quiz,.cols{break-inside:avoid}}
+
+/* ---- style-guide chrome (NOT part of the reusable style) ---------------- */
+.sg-wrap{max-width:1060px;margin:0 auto;padding:2.2rem 1.4rem 5rem}
+.sg-h1{font-family:var(--serif);font-size:2rem;font-weight:600;letter-spacing:-.015em;margin:0 0 .3rem}
+.sg-meta{font-family:var(--mono);font-size:.74rem;color:var(--accent);margin:0 0 .6rem}
+.sg-note{color:var(--muted);max-width:50rem;margin:0 0 1rem;font-size:.92rem}
+.sg-note b{color:var(--ink)}
+.sg-banner{font-family:var(--sans);background:var(--accent-soft);border:1px solid var(--accent-mid);border-left:4px solid var(--accent);border-radius:10px;padding:.9rem 1.1rem;margin:.2rem 0 1rem;font-size:.95rem;color:var(--ink)}
+.sg-banner b{color:var(--accent)}
+.sg-bar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:blur(6px);display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;padding:.7rem 0;margin:1rem 0 1.2rem;border-bottom:1px solid var(--border)}
+.sg-bar .lab{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-right:.2rem}
+.sw{display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid var(--border);background:var(--card);border-radius:99px;padding:.3rem .7rem .3rem .4rem;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--ink)}
+.sw .dot{width:13px;height:13px;border-radius:99px}
+.sw[aria-pressed="true"]{border-color:var(--ink)}
+.sg-sec{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:2.2rem 0 .7rem;border-top:1px solid var(--border);padding-top:1rem}
+.sg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.1rem}
+.sg-cell{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
+.sg-cap{font-size:.73rem;color:var(--muted);margin:0 0 .7rem;font-weight:600}
+.sg-cap b{color:var(--accent)}
+.swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem;margin:.4rem 0 0}
+.chip{border-radius:11px;overflow:hidden;border:1px solid var(--border)}
+.chip .top{height:48px;background:var(--accent);display:flex;align-items:flex-end;padding:.35rem .55rem;color:#fff;font-weight:700;font-size:.8rem}
+.chip .bot{padding:.4rem .55rem;font-size:.72rem;color:var(--muted);font-family:var(--mono)}
+.sem{display:flex;gap:.6rem;flex-wrap:wrap;margin:.3rem 0 0}
+.sem .s{flex:1;min-width:120px;border-radius:10px;padding:.6rem .7rem;font-family:var(--sans);font-size:.78rem;font-weight:700}
+.tones{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.3rem}
+.tone{font-family:var(--mono);font-size:.68rem;color:var(--muted);border:1px solid var(--border);border-radius:8px;overflow:hidden;min-width:92px}
+.tone .b{height:30px} .tone .l{padding:.25rem .4rem;background:var(--card)}
+@media print{.sg-bar{display:none}}
+
+</style>
+</head>
+<body data-accent="cobalt">
+
+<div class="sg-wrap ws">
+  <h1 class="sg-h1">Editorial Refined</h1>
+  <p class="sg-meta">Fraunces (display serif) + Inter (text) &middot; h1 ~34px &middot; h2 ~19px &middot; body ~15px</p>
+  <div class="sg-banner"><b>Furniture, not teaching.</b> This catalog is the consistent shell — type, callouts, tables, glossary, dashboard. The lesson itself is whatever best <b>shows</b> the idea: build a bespoke visual or interaction for the concept (see <b>Interactions</b> below) and theme it with the tokens. Don't reduce a lesson to filling in these boxes.</div>
+  <p class="sg-note">A component catalog for every HTML artifact in a study workspace — lessons, glossaries, reference cards, the progress dashboard — all themed by one accent. <b>Semantics are fixed:</b> green = right, red = wrong, amber = warn.</p>
+
+  <div class="sg-bar">
+    <span class="lab">Accent · one per curriculum</span>
+    <button class="sw" data-accent-pick="cobalt" aria-pressed="true"><span class="dot" style="background:#2a4fcf"></span>cobalt</button>
+      <button class="sw" data-accent-pick="teal" aria-pressed="false"><span class="dot" style="background:#0c6e77"></span>teal</button>
+      <button class="sw" data-accent-pick="cyan" aria-pressed="false"><span class="dot" style="background:#0e7490"></span>cyan</button>
+      <button class="sw" data-accent-pick="indigo" aria-pressed="false"><span class="dot" style="background:#4a3fd0"></span>indigo</button>
+      <button class="sw" data-accent-pick="violet" aria-pressed="false"><span class="dot" style="background:#6a3dd6"></span>violet</button>
+      <button class="sw" data-accent-pick="slate" aria-pressed="false"><span class="dot" style="background:#3f5063"></span>slate</button>
+  </div>
+
+  <div class="sg-sec">Accent palette · one accent per curriculum (no plum — it clashed with the red semantic)</div>
+  <div class="swatches">
+    <div class="chip" data-accent="cobalt"><div class="top"><span>cobalt</span></div><div class="bot">#2a4fcf &middot; AA &check;</div></div>
+      <div class="chip" data-accent="teal"><div class="top"><span>teal</span></div><div class="bot">#0c6e77 &middot; AA &check;</div></div>
+      <div class="chip" data-accent="cyan"><div class="top"><span>cyan</span></div><div class="bot">#0e7490 &middot; AA &check;</div></div>
+      <div class="chip" data-accent="indigo"><div class="top"><span>indigo</span></div><div class="bot">#4a3fd0 &middot; AA &check;</div></div>
+      <div class="chip" data-accent="violet"><div class="top"><span>violet</span></div><div class="bot">#6a3dd6 &middot; AA &check;</div></div>
+      <div class="chip" data-accent="slate"><div class="top"><span>slate</span></div><div class="bot">#3f5063 &middot; AA &check;</div></div>
+  </div>
+
+  <div class="sg-sec">Semantic colours · fixed under every accent</div>
+  <div class="sem">
+    <div class="s" style="background:var(--good-soft);color:var(--good)">right / solid &middot; green</div>
+    <div class="s" style="background:var(--bad-soft);color:var(--bad)">wrong &middot; red</div>
+    <div class="s" style="background:var(--warn-soft);color:var(--warn)">warn / shaky &middot; amber</div>
+  </div>
+
+  <div class="sg-sec">Paper &amp; ink</div>
+  <div class="tones">
+    <div class="tone"><div class="b" style="background:var(--paper)"></div><div class="l">paper</div></div>
+    <div class="tone"><div class="b" style="background:var(--card)"></div><div class="l">card</div></div>
+    <div class="tone"><div class="b" style="background:var(--ink)"></div><div class="l">ink</div></div>
+    <div class="tone"><div class="b" style="background:var(--muted)"></div><div class="l">muted</div></div>
+    <div class="tone"><div class="b" style="background:var(--border)"></div><div class="l">border</div></div>
+  </div>
+
+  <div class="sg-sec">Type scale</div>
+  <div class="sg-cell">
+    <p class="kicker">LLM Architecture &middot; <span class="accent">Tier 2 — Build craft</span> &middot; Lesson 03</p>
+    <h1>Retrieval-augmented generation</h1>
+    <p class="sub">One idea, taught to the point you can defend it in a design review.</p>
+    <p class="lead">A lead paragraph sets up the idea — a model's <em class="term">weights</em> are hazy long-term memory, the <em class="term">context window</em> is working memory at full fidelity — with an inline <code>code</code> token.</p>
+    <h2><span class="badge">Idea</span> A section header with a phase badge</h2>
+    <h3>A subsection (h3 · ~17px)</h3>
+    <p>Body text at the reading size (~15px), with a <em class="term">key term</em> in the accent. <span class="small">Small print and captions sit in muted grey.</span></p>
+  </div>
+
+  <div class="sg-sec">Text blocks</div>
+  <div class="sg-grid">
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Callouts</b> — default / key / warn</p>
+      <div class="callout"><span class="lbl">Note</span>Accent-tinted aside for an aside.</div>
+      <div class="callout key"><span class="lbl">The one-liner</span>Green for the takeaway worth keeping.</div>
+      <div class="callout warn"><span class="lbl">Watch out</span>Amber for a caveat — distinct from red.</div>
+    </div>
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Note</b> (neutral) &amp; <b>goal box</b></p>
+      <div class="note"><b>Neutral note:</b> a quiet box that doesn't compete with the semantic colours.</div>
+      <div class="goal"><b>Target:</b> by the end you can pick a retrieval strategy and defend it. We check it in chat.</div>
+    </div>
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Blockquote</b> &amp; <b>key–value list</b></p>
+      <blockquote class="quote">Retrieval quality is the ceiling on answer quality.<cite>— the one line to remember</cite></blockquote>
+      <dl class="kv"><dt>Recall</dt><dd>did we fetch the right chunk?</dd><dt>Precision</dt><dd>did we fetch only it?</dd></dl>
+    </div>
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Steps</b> &amp; <b>tick list</b> &amp; <b>tags</b></p>
+      <ol class="steps"><li>Fetch relevant material.</li><li>Place it in the window.</li><li>Instruct the model to ground in it.</li></ol>
+      <ul class="ticks"><li>Hybrid beats pure semantic.</li><li>Chunk by structure, not length.</li></ul>
+      <p style="margin:.4rem 0 0"><span class="tag">RAG</span> <span class="tag">C2</span> <span class="tag">legal-default</span></p>
+    </div>
+  </div>
+
+  <div class="sg-sec">Data &amp; reference</div>
+  <div class="sg-grid">
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Card</b> + <b>kit table</b></p>
+      <div class="card"><div class="hd">Grouped content</div>A plain card to set content apart from the flow.</div>
+      <table class="kit"><tr><th>Need</th><th>Reach for</th><th>Why</th></tr><tr><td>Knowledge</td><td>RAG</td><td>auditable, updatable</td></tr><tr><td>Form</td><td>Fine-tune</td><td>stable style, not facts</td></tr></table>
+    </div>
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Reference card</b> — equation + litmus</p>
+      <div class="eq"><span class="h">answer quality</span> = <span class="m">model</span> &times; <span class="h">retrieval quality</span></div>
+      <div class="litmus"><b>One test:</b> would a better model fix this failure? If no, it's a retrieval problem — don't reach for the prompt.</div>
+    </div>
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Durable vs. brittle</b> — two-column compare</p>
+      <div class="cols">
+        <div class="box dur"><h3>Durable</h3><ul><li>Hybrid retrieval</li><li>Structure-aware chunks</li><li>Metadata filters</li></ul></div>
+        <div class="box bri"><h3>Brittle</h3><ul><li>Pure semantic only</li><li>Fixed-length chunks</li><li>No re-ranking</li></ul></div>
+      </div>
+    </div>
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Glossary</b> — term list with ID chip + status</p>
+      <dl class="gloss">
+        <dt>Hybrid retrieval <span class="cid">C2 · W-02</span><span class="st">learned</span></dt>
+        <dd>Run semantic + keyword, fuse and score. Lay-paraphrase recall and exact-term precision in one query.</dd>
+        <dt>Re-ranking <span class="cid">C2 · W-02</span></dt>
+        <dd>Re-score the top ~50 candidates, keep the best ~5.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="sg-sec">Progress dashboard · new — all four states</div>
+  <div class="sg-cell">
+    <p class="sg-cap"><b>Where you are</b> — topic &middot; meter &middot; status. Solid (green) · Developing (accent) · Shaky (amber) · Not started (neutral).</p>
+    <div class="dash">
+      <div class="row"><span class="t"><span class="cid">M1</span> Pretraining</span><span class="meter"><i class="fill-good" style="width:100%"></i></span><span class="pill p-solid">Solid</span></div>
+      <div class="row"><span class="t"><span class="cid">C1</span> Context engineering</span><span class="meter"><i class="fill-acc" style="width:60%"></i></span><span class="pill p-dev">Developing</span></div>
+      <div class="row"><span class="t"><span class="cid">C6</span> Evals &amp; judge</span><span class="meter"><i class="fill-warn" style="width:30%"></i></span><span class="pill p-shaky">Shaky</span></div>
+      <div class="row"><span class="t"><span class="cid">D2</span> Generalization gap</span><span class="meter"><i class="fill-none" style="width:0%"></i></span><span class="pill p-none">Not started</span></div>
+    </div>
+  </div>
+
+  <div class="sg-sec">Interactions — build the tightest one the concept deserves; the kit below is only fallback</div>
+  <div class="sg-cell">
+    <p class="sg-cap"><b>Bespoke — built for this concept, not from the kit.</b> Raw HTML/SVG + the tokens, and <b>the default to reach for</b>. Drag the slider: attention compares every token with every other, so doubling N roughly quadruples the work (N²). The stock widgets below are fallback furniture.</p>
+    <div style="font-family:var(--sans);font-size:.85rem">
+      <label>Context length N = <b id="nval">4</b> &rarr; comparisons <b style="color:var(--accent)" id="nsq">16</b> (N²)</label>
+      <input type="range" id="nslider" min="1" max="10" value="4" style="margin:.5rem 0">
+      <svg id="nsvg" viewBox="0 0 220 220" width="170" height="170" style="display:block"></svg>
+    </div>
+  </div>
+  <div class="sg-grid">
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Reveal-to-learn</b> — teaching aid; fine mid-lesson, never on the closing check</p>
+      <div class="card" style="margin:0"><p style="margin:0">Guess first: why does a wrong answer still sound confident?</p>
+        <button class="reveal" onclick="this.nextElementSibling.classList.toggle('show')">Reveal</button>
+        <div class="answer">Confidence lives in the prose, not the truth.</div></div>
+    </div>
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Quiz</b> — ONE mechanic among many; don't default to it</p>
+      <div class="quiz" data-correct="b" data-ok="Right — hybrid covers both." data-no="Not quite — semantic-only misses the verbatim term.">
+        <p class="q">Which retrieval for a statute lookup?</p>
+        <button class="opt" data-k="a">Embedding-only</button>
+        <button class="opt" data-k="b">Hybrid (semantic + keyword)</button>
+        <div class="fb"></div>
+      </div>
+    </div>
+    <div class="sg-cell">
+      <p class="sg-cap"><b>Accent controls</b> — buttons, meter, slider for custom interactions</p>
+      <div style="display:flex;gap:.5rem;margin-bottom:.7rem"><button class="btn">Check</button><button class="btn ghost">Reset</button></div>
+      <div class="meter" style="margin-bottom:.7rem"><i style="width:68%"></i></div>
+      <input type="range" value="60">
+    </div>
+  </div>
+
+  <div class="sg-sec">Closing self-check · the one FIXED rule</div>
+  <div class="sg-cell">
+    <p class="sg-cap"><b>Open questions · no answers · no reveal · &rarr; chat.</b> A rule, not a style.</p>
+    <div class="selfcheck" style="margin:0">
+      <h2><span class="badge">&rarr; chat</span> Before you go</h2>
+      <ol><li>Pick a real document set and name the retrieval strategy you'd use — and why.</li><li>Where would pure semantic search silently fail you?</li></ol>
+      <p class="handoff"><b>Bring these to chat.</b> No answer key on purpose.</p>
+    </div>
+  </div>
+
+  <p class="src">Single source of truth for the study workspace look &middot; paste the style block into any self-contained artifact &middot; set one <code>data-accent</code> per curriculum.</p>
+</div>
+
+
+<script>
+  var picks=document.querySelectorAll('[data-accent-pick]');
+  picks.forEach(function(b){b.addEventListener('click',function(){
+    document.body.setAttribute('data-accent',b.dataset.accentPick);
+    picks.forEach(function(x){x.setAttribute('aria-pressed', x===b ? 'true':'false');});
+  });});
+  document.querySelectorAll('.quiz').forEach(function(q){
+    var c=q.dataset.correct, fb=q.querySelector('.fb');
+    q.querySelectorAll('.opt').forEach(function(o){o.addEventListener('click',function(){
+      if(q.dataset.done) return; q.dataset.done='1';
+      var r=(o.dataset.k===c); o.classList.add(r?'correct':'wrong');
+      fb.className='fb show '+(r?'ok':'no'); fb.textContent=r?q.dataset.ok:q.dataset.no;
+    });});
+  });
+  (function(){
+    var s=document.getElementById('nslider'); if(!s) return;
+    function draw(){
+      var n=+s.value, cell=200/n, p='';
+      for(var r=0;r<n;r++)for(var c=0;c<n;c++){p+='<rect x="'+(10+c*cell)+'" y="'+(10+r*cell)+'" width="'+(cell-2)+'" height="'+(cell-2)+'" rx="2" style="fill:var(--accent);opacity:.85"/>';}
+      document.getElementById('nsvg').innerHTML=p;
+      document.getElementById('nval').textContent=n; document.getElementById('nsq').textContent=n*n;
+    }
+    s.addEventListener('input',draw); draw();
+  })();
+</script>
+
+</body>
+</html>

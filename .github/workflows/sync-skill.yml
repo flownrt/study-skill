@@ -1,0 +1,35 @@
+name: Sync study skill from source
+
+# Keeps this standalone repo's skill/ + study.skill in sync with the source
+# collection (flownrt/skills). Runs weekly and on demand. No personal token
+# needed: the source is public and we commit back with the default GITHUB_TOKEN.
+
+on:
+  workflow_dispatch: {}          # lets you run it manually from the Actions tab
+  schedule:
+    - cron: "0 6 * * 1"          # every Monday 06:00 UTC
+
+permissions:
+  contents: write                # allow the workflow to push the refreshed files
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Refresh skill from source collection
+        run: python tools/sync.py
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "chore: sync study skill from source collection"
+            git push
+          else
+            echo "No changes to sync."
+          fi

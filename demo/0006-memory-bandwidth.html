@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why memory bandwidth is the real ceiling</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================================
+   STUDY WORKSPACE · SHARED STYLE REFERENCE  (style only — the furniture, not the teaching)
+   ----------------------------------------------------------------------------
+   One visual system for EVERY HTML artifact in a study workspace: lessons,
+   references (glossary / cards), and the progress dashboard. It styles the shell
+   around your content; it never dictates structure, section order, or which
+   interaction to build. The point of HTML is to SHOW a concept — build the
+   tightest visual mechanic the idea deserves and theme it with the tokens below.
+
+   USE
+     1. Paste this whole block into the artifact's <style> (artifacts stay
+        self-contained single files).
+     2. Load the fonts once in <head> (this file names them, does not fetch them):
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+     3. Wrap content and set ONE accent per curriculum:
+        <body class="ws" data-accent="cobalt">   (cobalt|teal|cyan|indigo|violet|slate)
+        Signal a tier/level via the kicker label + a badge, NOT by recolouring.
+
+   Semantic colours are FIXED under every accent: right=green, wrong=red, warn=amber.
+   Accents are AA-contrast-checked on the paper; new hues must pass white-on-accent
+   and accent-on-paper. The component classes are an optional, non-exhaustive kit —
+   reach past them whenever a bespoke visual teaches better.
+   ============================================================================ */
+
+:root{font-size:16px;--paper:#f5f2ec;--card:#fffdf8;--ink:#1c2224;--muted:#586063;--border:#e5e0d6;--serif:"Fraunces",Georgia,serif;--sans:"Inter",system-ui,sans-serif;--mono:"SF Mono",ui-monospace,monospace}
+
+:root{
+  --good:#1a7f4b; --good-soft:#e7f5ec; --bad:#c0392b; --bad-soft:#fbeae8; --warn:#b26a00; --warn-soft:#fdf3e3;
+  --accent:#2a4fcf; --accent-soft:#e9ecf7; --accent-mid:#8a97e0;
+}
+[data-accent="cobalt"]{--accent:#2a4fcf}[data-accent="teal"]{--accent:#0c6e77}[data-accent="cyan"]{--accent:#0e7490}[data-accent="indigo"]{--accent:#4a3fd0}[data-accent="violet"]{--accent:#6a3dd6}[data-accent="slate"]{--accent:#3f5063}
+[data-accent]{--accent-soft:color-mix(in srgb,var(--accent) 14%,var(--paper));--accent-mid:color-mix(in srgb,var(--accent) 55%,#fff)}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);margin:0;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* base reading wrapper: ONE shared measure so every artifact lines up — same column
+   width, centering and page padding across lessons, references and the dashboard.
+   rem-anchored headings stay put, running text is smaller. Do not override per-file. */
+.ws{font-size:.9375rem;max-width:760px;margin:0 auto;padding:2rem 1.4rem 3rem}
+
+/* type */
+.ws h1{font-family:var(--serif);font-weight:600;font-size:2.15rem;line-height:1.12;letter-spacing:-.015em;margin:.3rem 0 .2rem;color:var(--ink)}
+.ws h2{font-family:var(--sans);font-weight:700;font-size:1.2rem;margin:1.6rem 0 .55rem;padding-bottom:.3rem;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:.5rem;letter-spacing:-.01em}
+.ws h3{font-family:var(--sans);font-weight:700;font-size:1.04rem;margin:1rem 0 .35rem}
+.kicker{font-family:var(--sans);font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.kicker .accent{color:var(--accent)}
+.sub{font-family:var(--sans);color:var(--muted);font-style:italic;font-size:1rem;margin:0 0 .2rem}
+.lead{font-size:.98rem}
+.ws p{margin:.6rem 0}
+em.term{font-style:normal;font-weight:600;color:var(--accent)}
+.small{font-size:.82rem;color:var(--muted)}
+code{font-family:var(--mono);font-size:.84em;background:color-mix(in srgb,var(--ink) 8%,var(--paper));padding:.08rem .35rem;border-radius:4px}
+
+/* badges + tags */
+.badge{font-family:var(--sans);font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--accent);border-radius:99px;padding:.18rem .6rem;white-space:nowrap}
+.tag{font-family:var(--sans);font-size:.68rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:.12rem .5rem;white-space:nowrap}
+
+/* boxes */
+.goal{font-family:var(--sans);font-size:.86rem;line-height:1.55;color:var(--muted);background:var(--accent-soft);border-radius:10px;padding:.85rem 1.05rem}
+.goal b{color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;margin:.8rem 0}
+.card .hd{font-family:var(--sans);font-weight:700;font-size:.9rem;margin-bottom:.3rem}
+.callout{font-family:var(--sans);font-size:.92rem;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;padding:.75rem .95rem;margin:.8rem 0}
+.callout.key{border-color:var(--good);background:var(--good-soft)}
+.callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+.callout .lbl{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:.2rem;color:var(--muted)}
+.note{font-family:var(--sans);font-size:.83rem;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.6rem .85rem;margin:.8rem 0}
+blockquote.quote{font-family:var(--serif);font-style:italic;font-size:1.02rem;color:var(--ink);border-left:3px solid var(--accent-mid);margin:.8rem 0;padding:.2rem 0 .2rem 1rem}
+blockquote.quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:.78rem;color:var(--muted);margin-top:.35rem}
+
+/* key-value + lists */
+dl.kv{font-family:var(--sans);font-size:.88rem;margin:.6rem 0;display:grid;grid-template-columns:auto 1fr;gap:.3rem .8rem}
+dl.kv dt{font-weight:700;color:var(--accent);white-space:nowrap}
+dl.kv dd{margin:0}
+ol.steps{list-style:none;counter-reset:s;font-family:var(--sans);font-size:.9rem;padding:0;margin:.6rem 0}
+ol.steps li{counter-increment:s;position:relative;padding-left:2rem;margin:.5rem 0}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:-.1rem;width:1.4rem;height:1.4rem;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center}
+ul.ticks{list-style:none;font-family:var(--sans);font-size:.9rem;padding:0;margin:.6rem 0}
+ul.ticks li{position:relative;padding-left:1.5rem;margin:.4rem 0}
+ul.ticks li::before{content:"\2713";position:absolute;left:0;color:var(--good);font-weight:700}
+
+/* table */
+table.kit{width:100%;border-collapse:collapse;margin:.6rem 0;font-family:var(--sans);font-size:.86rem}
+table.kit th,table.kit td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--border);vertical-align:top}
+table.kit th{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+table.kit td:first-child{font-weight:700;white-space:nowrap;color:var(--accent)}
+
+/* glossary */
+dl.gloss{margin:.4rem 0}
+dl.gloss dt{font-family:var(--sans);font-weight:700;margin-top:.8rem;font-size:.94rem;color:var(--ink)}
+dl.gloss dd{margin:.2rem 0 0;font-size:.88rem;color:var(--ink)}
+.cid{font-family:var(--mono);font-size:.68rem;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:.08rem .4rem;border-radius:99px;margin-left:.4rem;white-space:nowrap}
+.st{font-family:var(--sans);font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:.08rem .4rem;border-radius:99px;margin-left:.35rem;background:var(--good-soft);color:var(--good)}
+
+/* reference card: equation, litmus, durable/brittle columns */
+.eq{font-family:var(--sans);font-weight:700;text-align:center;font-size:1.05rem;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.8rem;margin:.4rem 0 .3rem;letter-spacing:-.01em}
+.eq .m{color:var(--muted)} .eq .h{color:var(--accent)}
+.litmus{font-family:var(--sans);background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:.7rem .9rem;margin:.5rem 0;font-size:.89rem}
+.litmus b{color:var(--accent)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.6rem 0}
+.box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.8rem .95rem;font-family:var(--sans)}
+.box.dur{border-top:3px solid var(--good)} .box.bri{border-top:3px solid var(--bad)}
+.box h3{margin:.1rem 0 .4rem;font-size:.9rem} .box.dur h3{color:var(--good)} .box.bri h3{color:var(--bad)}
+.box ul{margin:.2rem 0 0;padding-left:1.1rem;font-size:.82rem} .box li{margin:.22rem 0}
+
+/* progress dashboard */
+.dash{font-family:var(--sans);margin:.5rem 0}
+.dash .row{display:grid;grid-template-columns:15rem 1fr 6.4rem;align-items:center;gap:.7rem;margin:.5rem 0}
+.dash .t{font-size:.85rem;font-weight:600}
+.meter{height:8px;background:color-mix(in srgb,var(--ink) 9%,var(--paper));border-radius:99px;overflow:hidden}
+.meter>i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.fill-good{background:var(--good)!important} .fill-acc{background:var(--accent)!important}
+.fill-warn{background:var(--warn)!important} .fill-none{background:transparent!important}
+.pill{font-family:var(--sans);font-size:.62rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;text-align:center;padding:.2rem .15rem;border-radius:99px;border:1px solid transparent}
+.p-solid{background:var(--good-soft);color:var(--good)}
+.p-dev{background:var(--accent-soft);color:var(--accent)}
+.p-shaky{background:var(--warn-soft);color:var(--warn)}
+.p-none{background:transparent;color:var(--muted);border-color:var(--border)}
+
+/* reveal-to-learn */
+.reveal{font-family:var(--sans);font-size:.84rem;font-weight:600;color:var(--accent);background:var(--accent-soft);border:none;border-radius:8px;padding:.45rem .8rem;cursor:pointer;margin-top:.5rem}
+.reveal:hover{filter:brightness(.97)}
+.answer{display:none;margin-top:.6rem;padding:.7rem .9rem;background:var(--card);border:1px dashed var(--accent);border-radius:8px;font-size:.92rem}
+.answer.show{display:block}
+
+/* quiz (one example mechanic — not a default) */
+.quiz{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin:.6rem 0}
+.quiz .q{font-family:var(--sans);font-weight:700;font-size:.95rem;margin:0 0 .6rem}
+.opt{font-family:var(--sans);font-size:.9rem;display:block;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:9px;padding:.55rem .8rem;margin:.4rem 0;cursor:pointer;transition:.13s;color:var(--ink)}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:700}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.fb{font-family:var(--sans);font-size:.86rem;margin-top:.6rem;padding:.55rem .8rem;border-radius:8px;display:none}
+.fb.show{display:block}.fb.ok{background:var(--good-soft);color:var(--good)}.fb.no{background:var(--bad-soft);color:var(--bad)}
+
+/* accent controls for custom interactions */
+.btn{font-family:var(--sans);font-weight:600;font-size:.88rem;border:none;border-radius:9px;padding:.5rem 1rem;cursor:pointer;background:var(--accent);color:#fff}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+input[type=range]{accent-color:var(--accent);width:100%}
+
+/* closing self-check */
+.selfcheck{background:var(--card);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:12px;padding:1.2rem;margin:.6rem 0}
+.selfcheck h2{margin-top:0;border:none;padding:0}
+.selfcheck ol{font-family:var(--sans);font-size:.93rem;margin:.3rem 0 1rem;padding-left:1.2rem}
+.selfcheck li{margin:.5rem 0}
+.handoff{font-family:var(--sans);font-size:.88rem;color:var(--muted);border-top:1px dashed var(--border);padding-top:.85rem;margin:0}
+.handoff b{color:var(--ink)}
+.src{font-family:var(--sans);font-size:.72rem;color:var(--muted);margin-top:1.4rem;border-top:1px solid var(--border);padding-top:.7rem}
+
+@media(max-width:560px){.cols{grid-template-columns:1fr}.dash .row{grid-template-columns:10rem 1fr 5.4rem}}
+@media print{body{background:#fff}.reveal{display:none}.answer{display:block}.card,.quiz,.cols{break-inside:avoid}}
+</style>
+<style>
+/* lesson-specific: one clean roofline (ramp-to-roof) */
+.simwrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.05rem 1.1rem .95rem;margin:.7rem 0 .3rem}
+.sliders{display:grid;gap:.15rem;margin-bottom:.7rem}
+.ctrl{display:grid;grid-template-columns:10.5rem 1fr 6.6rem;align-items:center;gap:.7rem;font-family:var(--sans);font-size:.86rem;margin:.32rem 0}
+.ctrl .lab{font-weight:600}
+.ctrl .lab small{display:block;font-weight:400;font-size:.68rem;color:var(--muted)}
+.ctrl output{font-family:var(--mono);color:var(--accent);font-weight:700;text-align:right}
+
+.rfwrap{position:relative;width:100%;cursor:ew-resize;touch-action:none;user-select:none}
+.rf{display:block;width:100%;height:auto}
+.glegend{display:flex;flex-wrap:wrap;gap:.2rem 1.1rem;font-family:var(--sans);font-size:.74rem;color:var(--muted);margin:.5rem 0 .1rem;justify-content:center}
+.glegend span{display:inline-flex;align-items:center;gap:.4rem}
+.glegend .ln{width:20px;height:0;border-top-width:3px;border-top-style:solid;border-radius:2px}
+
+.narrate{font-family:var(--sans);font-size:.85rem;line-height:1.5;color:var(--ink);background:var(--accent-soft);border-radius:9px;padding:.6rem .8rem;margin:.7rem 0 .3rem}
+.narrate b{color:var(--accent)}
+
+.reads{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:.55rem 0 .1rem}
+.read{background:var(--paper);border:1px solid var(--border);border-radius:9px;padding:.5rem .45rem;text-align:center}
+.read .k{font-family:var(--sans);font-size:.56rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.18rem}
+.read .v{font-family:var(--mono);font-size:.98rem;font-weight:700;color:var(--ink)}
+.regime{font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.02em;text-transform:uppercase;padding:.24rem .3rem;border-radius:99px;display:inline-block}
+.regime.mem{background:var(--warn-soft);color:var(--warn)}
+.regime.cmp{background:var(--good-soft);color:var(--good)}
+.read.costv .v{color:var(--accent)}
+.presets{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0 0;align-items:center}
+.presets .plab{font-family:var(--sans);font-size:.72rem;color:var(--muted);margin-right:.1rem}
+.presets .btn{font-size:.76rem;padding:.32rem .7rem}
+@media(max-width:560px){.ws{padding-left:1.1rem;padding-right:1.1rem}.reads{grid-template-columns:1fr 1fr}.ctrl{grid-template-columns:1fr auto;grid-template-areas:"lab val" "sld sld";gap:.15rem .6rem}.ctrl .lab{grid-area:lab}.ctrl output{grid-area:val;align-self:center;text-align:right}.ctrl input[type=range]{grid-area:sld;width:100%;height:1.7rem;margin-top:.15rem}}
+</style>
+</head>
+<body class="ws" data-accent="indigo">
+
+<p class="kicker">LLM Architecture · Tier 3 Open Debates · <span class="accent">Lesson 06</span></p>
+<h1>The real ceiling is memory bandwidth</h1>
+<p class="sub">Why serving a frontier model is bottlenecked by <em>moving weights</em>, not by doing math — the one idea that explains your bill, your latency, and why context lengths stalled.</p>
+
+<div class="goal"><b>Goal:</b> hold your own in technical LLM discussions. After this you can answer "why is output more expensive than input?", "why is there a hard latency floor?", and "why did context lengths stop growing?" — all with the same picture, and read a roofline chart out loud.</div>
+
+<h2><span class="badge">Idea</span> Compute is cheap. Bandwidth is the bottleneck.</h2>
+<p>To generate one token, an accelerator must do two things: <b>move</b> the model's weights out of memory onto the chip, and <b>compute</b> with them. These happen in parallel, so the step takes as long as the <i>slower</i> of the two:</p>
+<div class="eq"><span class="h">step time</span> <span class="m">=</span> max( <span class="h">bytes moved ÷ memory bandwidth</span> , <span class="m">FLOPs ÷ compute speed</span> )</div>
+<p>The surprise — the whole thesis of this debate — is which side usually wins. Modern chips can do <em class="term">hundreds of FLOPs for every byte</em> they can fetch from memory (that ratio, work per byte, is <em class="term">arithmetic intensity</em>). Unless each fetched weight is reused for a lot of math, the chip finishes computing and then <b>sits idle waiting on memory</b>. That regime — <em class="term">memory-bandwidth-bound</em> — is where ordinary LLM serving lives.</p>
+
+<div class="callout key"><span class="lbl">The mental model</span>A serving accelerator is a fast worker starved of parts on a slow conveyor belt. Compute is abundant; <b>bandwidth is scarce.</b> So the whole design game is <b>reusing each fetched byte across as much work as possible</b> — and the chart below is how you see whether you're winning that game.</div>
+
+<h2><span class="badge">Try it</span> One graph: ramp up to the roof, then you're stuck</h2>
+<p>This is the <b>roofline</b>. The curve is how much of the chip's compute you actually use as you make the <b>batch</b> bigger. You climb the <span style="color:var(--warn);font-weight:700">memory-bandwidth ramp</span> — every extra request reuses the same weight-fetch, so it's near-free — until you hit the flat <span style="color:var(--good);font-weight:700">compute roof</span> and can climb no further. The shaded gap up to the roof is <b>compute sitting idle</b>. Drag the dot, or raise the <b>bandwidth</b> to make the ramp steeper.</p>
+
+<div class="simwrap">
+  <div class="sliders">
+    <div class="ctrl"><span class="lab">Batch size <small>requests sharing one weight-fetch</small></span><input type="range" id="batch" min="1" max="1024" step="1" value="1"><output id="batchV">1</output></div>
+    <div class="ctrl"><span class="lab">Memory bandwidth <small>speed of the conveyor belt</small></span><input type="range" id="bw" min="1" max="8" step="0.5" value="3"><output id="bwV">3.0 TB/s</output></div>
+  </div>
+
+  <div class="rfwrap" id="rfwrap">
+    <svg class="rf" id="rf" viewBox="0 0 640 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Roofline: share of peak compute used as batch size grows, with a draggable operating point"></svg>
+  </div>
+  <div class="glegend">
+    <span><span class="ln" style="border-color:var(--warn)"></span>memory-bandwidth-bound (the ramp)</span>
+    <span><span class="ln" style="border-color:var(--good)"></span>compute-bound (the roof)</span>
+  </div>
+
+  <div class="narrate" id="narrate">…</div>
+
+  <div class="reads">
+    <div class="read"><span class="k">Bottleneck</span><br><span class="regime mem" id="rRegime">Memory</span></div>
+    <div class="read"><span class="k">Compute used</span><span class="v" id="rUtil">0.3%</span></div>
+    <div class="read costv"><span class="k">Cost / token</span><span class="v" id="rCost">333×</span></div>
+    <div class="read"><span class="k">Roof reached at batch</span><span class="v" id="rRidge">333</span></div>
+  </div>
+  <div class="presets">
+    <span class="plab">jump to:</span>
+    <button class="btn ghost" data-b="1">1 · single user</button>
+    <button class="btn ghost" data-b="ridge">the roof</button>
+    <button class="btn ghost" data-b="1024">full batch</button>
+  </div>
+</div>
+<div class="note">Illustrative hardware: peak ≈ <code>1000 TFLOP/s</code>, bandwidth slider <code>1–8 TB/s</code>. The roof is reached at batch ≈ <code>peak ÷ bandwidth</code> (the ridge point), and batch size is mapped straight to arithmetic intensity so the effect is visible. Real stacks add KV-cache traffic and other terms — the shape and the moral are unchanged.</div>
+
+<h2><span class="badge">Why it matters</span> What this one wall actually decides</h2>
+<p>This isn't a hardware-trivia footnote. The memory-bandwidth wall is the hidden variable behind a surprising share of the pricing, latency, and product decisions you'll argue about.</p>
+
+<h3>Your bill: output costs more than input</h3>
+<p>Processing the prompt (<em class="term">prefill</em>) happens in one big parallel pass — high arithmetic intensity, comfortably <b>compute-bound</b>, cheap per token. Generating the reply (<em class="term">decode</em>) is one token at a time, each step dominated by re-fetching the weights — <b>memory-bound</b>. That asymmetry is why providers charge several times more for <b>output</b> tokens than input tokens. The numbers on the price sheet are the roofline made visible.</p>
+
+<h3>Cheap batch APIs — and a latency floor you can't buy past</h3>
+<p>Because a lone request sits far down the memory-bound ramp, providers pack many users' requests behind a single weight-fetch. That's the biggest single lever on serving cost, and it's why asynchronous <b>batch APIs</b> come at a steep discount: they let the provider fill idle, memory-bound capacity on their own schedule. But the same physics sets a floor nobody can pay under — one conversation's tokens still come out one memory-read at a time. You can raise <i>throughput</i> with batching; you cannot push a single stream's <i>per-token latency</i> below the time it takes to stream the weights past the chip. "Just buy faster GPUs" doesn't help when the extra FLOPs sit idle waiting on the same memory.</p>
+
+<h3>Why context lengths plateaued</h3>
+<p>Long context hits the wall from a second direction. Every token you keep lives in the <b>KV cache</b>, and that cache must be read on <i>every</i> future step — more bytes to move, more memory-bound time per token. That's a big part of why advertised context lengths stalled for a while, and why <b>prompt caching</b> (store a stable prefix's KV so it isn't re-read) and KV-compression schemes exist at all.</p>
+
+<h3>Why the models and the chips look the way they do</h3>
+<p>It even shapes architecture. <b>Mixture-of-Experts</b> routes each token through only a few of its experts, so far fewer weights are fetched per token — a direct assault on the bandwidth bottleneck that pays off at high serving volume. And it's why accelerators are sold on <b>memory bandwidth</b> (terabytes per second of HBM) as loudly as on FLOPs: the high-bandwidth memory is the scarce, expensive part, and newer attention designs (grouped-query, multi-head latent attention) earn their keep by moving <i>fewer bytes</i>.</p>
+
+<h3>The levers, and what each does to the wall</h3>
+<table class="kit">
+  <thead><tr><th>Design lever</th><th>What it does to the memory-bandwidth wall</th></tr></thead>
+  <tbody>
+    <tr><td>Batching</td><td>Reuses one weight-fetch across many requests → climbs the ramp toward the compute roof.</td></tr>
+    <tr><td>MoE / sparsity</td><td>Activates only a few experts → fewer weight bytes fetched per token.</td></tr>
+    <tr><td>Prompt caching</td><td>Reuses a stable prefix's KV cache → skips re-reading it every call.</td></tr>
+    <tr><td>GQA / MLA</td><td>Compresses the KV cache → fewer bytes to move for long context.</td></tr>
+    <tr><td>Quantization</td><td>Fewer bytes per weight (e.g. 8- or 4-bit) → less to move each step.</td></tr>
+    <tr><td>Faster HBM</td><td>Steepens the ramp itself → the roof is reached at a smaller batch.</td></tr>
+  </tbody>
+</table>
+
+<div class="litmus"><b>Sound like an architect.</b> "Output is priced above input because decode is memory-bandwidth-bound and prefill is compute-bound." · "We're on the ramp, so more FLOPs won't help — we need a bigger batch or more bandwidth." · "Longer context costs more because the KV cache adds bytes to move every step." People even reverse-engineer a lab's serving setup from its public token prices, because the prices track the roofline.</div>
+
+<h2><span class="badge">Check</span> Four quick scenarios</h2>
+
+<div class="quiz" data-exp="Decode generates one token at a time, reusing each fetched weight for very little math — deep in the memory-bound region, so most of the chip's compute idles while it waits on memory. Prefill crunches the whole prompt in one parallel, compute-bound pass. Same wall, opposite sides — which is exactly why output tokens are priced higher.">
+  <p class="q">1 · Why do <b>output (decode) tokens</b> cost more than input (prefill) tokens?</p>
+  <button class="opt" data-ok="0">Output text is longer, so there's simply more of it.</button>
+  <button class="opt" data-ok="1">Decode is one token at a time — memory-bound, low reuse; prefill is a compute-bound parallel pass.</button>
+  <button class="opt" data-ok="0">The model thinks harder about what to say than what to read.</button>
+</div>
+
+<div class="quiz" data-exp="Without a big batch, each fetched byte of weights is used for almost no math, so the expensive memory read is amortised over very few tokens. Batching packs many requests behind one weight-fetch, climbing the ramp toward the compute roof — the single biggest lever on serving cost.">
+  <p class="q">2 · Providers batch many users' requests together mainly because…</p>
+  <button class="opt" data-ok="1">It amortises the weight-fetch across many tokens, climbing toward the compute roof.</button>
+  <button class="opt" data-ok="0">It makes each individual answer higher quality.</button>
+  <button class="opt" data-ok="0">Users prefer their requests processed alongside strangers'.</button>
+</div>
+
+<div class="quiz" data-exp="On the roofline, an operating point on the ramp (left of the roof) is limited by the memory-bandwidth wall — buying more FLOPs won't help; you need more bandwidth or a bigger batch to raise arithmetic intensity. Only up on the flat roof does raw compute set the limit.">
+  <p class="q">3 · Your operating point sits <b>on the ramp</b>, before the roof. Buying a chip with 2× the FLOPs will…</p>
+  <button class="opt" data-ok="1">Barely help — you're bandwidth-bound; you need more bandwidth or a bigger batch.</button>
+  <button class="opt" data-ok="0">Double your throughput, since compute is the limit.</button>
+  <button class="opt" data-ok="0">Have no effect on anything, ever.</button>
+</div>
+
+<div class="quiz" data-exp="Below the roof you were memory-bound — waiting on memory anyway — so adding requests to the batch produces more tokens in the same step time: throughput rises and cost per token falls. But a single stream's tokens still emerge one memory-read at a time, so that one user's latency doesn't improve. Throughput and single-stream latency are different knobs.">
+  <p class="q">4 · You raise the batch size: cost per token drops nicely, but one user's replies are <b>no faster</b>. Why?</p>
+  <button class="opt" data-ok="1">Batching lifts throughput (you were waiting on memory anyway), but per-token latency is still set by the memory read.</button>
+  <button class="opt" data-ok="0">The extra requests slow everyone down equally, cancelling out.</button>
+  <button class="opt" data-ok="0">Cost and latency are the same thing, so this can't happen.</button>
+</div>
+
+<div class="selfcheck">
+  <h2><span class="badge">→ chat</span> Before you go</h2>
+  <p class="small">No answer key here on purpose – send your take in chat and I'll mark this concept solid.</p>
+  <ol>
+    <li>State the roofline rule (<code>time = max(memory, compute)</code>) in two sentences, and explain what it means to be <b>memory-bandwidth-bound</b>.</li>
+    <li>Use the one idea to answer <i>both</i>: why does output cost more than input, and why did advertised context lengths stop growing for a while?</li>
+    <li>A teammate wants faster serving and proposes buying GPUs with more raw compute. When is that the wrong fix — and what would you check on the roofline first?</li>
+  </ol>
+  <p class="handoff"><b>Your move.</b> Answer any one back in chat. That evidence is what turns <b>D6 · Memory bandwidth</b> solid on your dashboard. I'm your tutor for any follow-up.</p>
+</div>
+
+<p class="src">Source: curriculum <b>D6 · Memory bandwidth as the real constraint</b> <code>[INFE][SYS][SCALE]</code>. The roofline (<code>throughput = min(peak, bandwidth × intensity)</code>) and the two-clocks rule (<code>time = max(memory, compute)</code>) are the standard systems framing; the peak, bandwidth range, and batch→intensity mapping are illustrative teaching values chosen to show the crossover, not a specific accelerator's spec.</p>
+
+<script>
+(function(){
+  // ---- illustrative hardware; units chosen so the roof is reached at batch = 1000/bw ----
+  var PEAK_T=1000;          // peak compute, TFLOP/s (the roof = 100% used)
+  var BMAX=1024;            // batch slider max
+  var batchEl=document.getElementById("batch"),
+      batchV=document.getElementById("batchV"),
+      bwEl=document.getElementById("bw"),
+      bwV=document.getElementById("bwV"),
+      rRegime=document.getElementById("rRegime"),
+      rUtil=document.getElementById("rUtil"),
+      rCost=document.getElementById("rCost"),
+      rRidge=document.getElementById("rRidge"),
+      narrate=document.getElementById("narrate"),
+      rf=document.getElementById("rf"),
+      rfwrap=document.getElementById("rfwrap");
+  var NS="http://www.w3.org/2000/svg";
+
+  function bw(){return parseFloat(bwEl.value);}
+  function ridge(){return 1000/bw();}                 // batch at which compute saturates
+  function util(b){return Math.min(1,b/ridge());}     // fraction of peak compute used
+  function fmtPct(u){var v=u*100;return (v>=10?Math.round(v):v.toFixed(1))+"%";}
+  function fmtX(c){return (c>=10?Math.round(c):c.toFixed(1))+"×";}
+
+  // ---- geometry (linear axes) ----
+  var W=640,H=300,padL=52,padR=20,padT=22,padB=44;
+  var plotW=W-padL-padR, plotH=H-padT-padB;
+  function X(b){return padL + (b/BMAX)*plotW;}
+  function Y(u){return padT + plotH - u*plotH;}       // u in 0..1
+  function el(tag,a){var e=document.createElementNS(NS,tag);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function txt(x,y,s,o){o=o||{};var t=el("text",{x:x,y:y,fill:o.fill||"var(--muted)","font-size":o.fs||"10.5","font-family":o.ff||"var(--sans)","text-anchor":o.a||"start"});if(o.w)t.setAttribute("font-weight",o.w);if(o.tr)t.setAttribute("transform",o.tr);t.textContent=s;return t;}
+
+  function draw(){
+    var R=Math.min(ridge(),BMAX);      // batch where roof is hit (within range)
+    var b=parseInt(batchEl.value,10);
+    rf.innerHTML="";
+
+    // frame
+    rf.appendChild(el("line",{x1:padL,y1:padT+plotH,x2:padL+plotW,y2:padT+plotH,stroke:"var(--border)","stroke-width":1}));
+    rf.appendChild(el("line",{x1:padL,y1:padT,x2:padL,y2:padT+plotH,stroke:"var(--border)","stroke-width":1}));
+    // y gridlines + ticks (0/50/100)
+    [0,0.5,1].forEach(function(u){
+      if(u>0) rf.appendChild(el("line",{x1:padL,y1:Y(u),x2:padL+plotW,y2:Y(u),stroke:"var(--border)","stroke-width":1,opacity:u===1?".9":".5","stroke-dasharray":u===1?"4 3":"0"}));
+      rf.appendChild(txt(padL-8,Y(u)+3,Math.round(u*100)+"%",{a:"end",ff:"var(--mono)",fs:"9.5"}));
+    });
+    rf.appendChild(txt(padL+plotW,Y(1)-6,"peak compute (the roof)",{a:"end",fill:"var(--good)",fs:"10",w:"700"}));
+    // x ticks
+    [0,256,512,768,1024].forEach(function(v){
+      rf.appendChild(txt(X(v),padT+plotH+16,v,{a:"middle",ff:"var(--mono)",fs:"9.5"}));
+    });
+
+    // fill: compute you're actually using (area under the curve)
+    rf.appendChild(el("path",{d:"M "+X(0)+" "+Y(0)+" L "+X(R)+" "+Y(1)+" L "+X(BMAX)+" "+Y(1)+" L "+X(BMAX)+" "+Y(0)+" Z",fill:"var(--accent)",opacity:".10"}));
+
+    // the roofline: ramp (memory-bound) then roof (compute-bound)
+    rf.appendChild(el("line",{x1:X(0),y1:Y(0),x2:X(R),y2:Y(1),stroke:"var(--warn)","stroke-width":3.5,"stroke-linecap":"round"}));
+    rf.appendChild(el("line",{x1:X(R),y1:Y(1),x2:X(BMAX),y2:Y(1),stroke:"var(--good)","stroke-width":3.5,"stroke-linecap":"round"}));
+
+    // ridge marker (where roof is reached)
+    rf.appendChild(el("line",{x1:X(R),y1:Y(1),x2:X(R),y2:padT+plotH,stroke:"var(--muted)","stroke-width":1,"stroke-dasharray":"3 4",opacity:".55"}));
+    rf.appendChild(txt(X(R),padT+plotH+30,"roof at ~"+Math.round(R),{a:"middle",fill:"var(--muted)",fs:"9.5"}));
+
+    // axis titles
+    rf.appendChild(txt(padL+plotW/2,H-4,"batch size  (requests sharing one weight-fetch) →",{a:"middle",fs:"11"}));
+    rf.appendChild(txt(14,padT+plotH/2,"compute used →",{a:"middle",fs:"11",tr:"rotate(-90 14 "+(padT+plotH/2)+")"}));
+
+    // operating point
+    var u=util(b), px=X(b), py=Y(u);
+    rf.appendChild(el("line",{x1:px,y1:py,x2:px,y2:padT+plotH,stroke:"var(--accent)","stroke-width":1,"stroke-dasharray":"4 4",opacity:".8"}));
+    rf.appendChild(el("circle",{cx:px,cy:py,r:11,fill:"var(--accent)",opacity:".16"}));
+    rf.appendChild(el("circle",{cx:px,cy:py,r:5.5,fill:"var(--accent)",stroke:"var(--card)","stroke-width":2}));
+    // label at the dot
+    var lx=Math.min(px+10,padL+plotW-4), anch=px>padL+plotW-70?"end":"start";
+    if(px>padL+plotW-70) lx=px-10;
+    rf.appendChild(txt(lx,Math.max(py-11,padT+11),fmtPct(u)+" used",{a:anch,fill:"var(--accent)",fs:"11",w:"700"}));
+  }
+
+  function render(){
+    var b=parseInt(batchEl.value,10), R=ridge();
+    batchV.textContent=b;
+    bwV.textContent=bw().toFixed(1)+" TB/s";
+    rRidge.textContent=Math.round(R);
+    var u=util(b), memBound=b<R;
+    rRegime.textContent=memBound?"Memory":"Compute";
+    rRegime.className="regime "+(memBound?"mem":"cmp");
+    rUtil.textContent=fmtPct(u);
+    rCost.textContent=fmtX(1/u);
+    if(memBound){
+      narrate.innerHTML="At batch <b>"+b+"</b> on a <b>"+bw().toFixed(1)+" TB/s</b> link, only <b>"+fmtPct(u)+"</b> of the chip is working — the rest idles waiting on memory, so each token carries <b>"+fmtX(1/u)+"</b> the floor cost. Batch toward <b>"+Math.round(R)+"</b> to reach the roof.";
+    } else {
+      narrate.innerHTML="At batch <b>"+b+"</b> you're on the <b>roof</b>: compute is fully used (<b>"+fmtPct(u)+"</b>) and cost per token has bottomed out near <b>1×</b>. Bigger batches now just add latency — and the memory link has spare capacity.";
+    }
+    draw();
+  }
+
+  batchEl.addEventListener("input",render);
+  bwEl.addEventListener("input",render);
+  Array.prototype.forEach.call(document.querySelectorAll(".presets .btn"),function(p){
+    p.addEventListener("click",function(){
+      var v=p.getAttribute("data-b");
+      batchEl.value = v==="ridge" ? Math.min(BMAX,Math.round(ridge())) : v;
+      render();
+    });
+  });
+
+  // drag the operating point (linear x → batch)
+  function setFromClientX(clientX){
+    var r=rf.getBoundingClientRect();
+    var px=(clientX-r.left)/r.width*W;
+    var b=Math.round((px-padL)/plotW*BMAX);
+    batchEl.value=Math.max(1,Math.min(BMAX,b));
+    render();
+  }
+  var dragging=false;
+  rfwrap.addEventListener("pointerdown",function(e){dragging=true;rfwrap.setPointerCapture(e.pointerId);setFromClientX(e.clientX);e.preventDefault();});
+  rfwrap.addEventListener("pointermove",function(e){if(dragging)setFromClientX(e.clientX);});
+  rfwrap.addEventListener("pointerup",function(){dragging=false;});
+  rfwrap.addEventListener("pointercancel",function(){dragging=false;});
+  window.addEventListener("resize",draw);
+
+  render();
+
+  // quizzes (each independent; explanation carried on the .quiz element)
+  Array.prototype.forEach.call(document.querySelectorAll(".quiz"),function(qz){
+    var done=false, exp=qz.getAttribute("data-exp");
+    Array.prototype.forEach.call(qz.querySelectorAll(".opt"),function(o){
+      o.addEventListener("click",function(){
+        if(done) return; done=true;
+        var ok=o.getAttribute("data-ok")==="1";
+        Array.prototype.forEach.call(qz.querySelectorAll(".opt"),function(xo){
+          if(xo.getAttribute("data-ok")==="1") xo.classList.add("correct");
+        });
+        if(!ok) o.classList.add("wrong");
+        var fb=qz.querySelector(".fb");
+        if(!fb){ fb=document.createElement("div"); fb.className="fb"; qz.appendChild(fb); }
+        fb.className="fb show "+(ok?"ok":"no");
+        fb.innerHTML=(ok?"<b>Right.</b> ":"<b>Not quite.</b> ")+exp;
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
